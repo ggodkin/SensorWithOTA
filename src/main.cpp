@@ -36,7 +36,7 @@ const int ANALOG_PIN = 34; // Example: Map to an ESP32 ADC GPIO (e.g., GPIO34 is
 
 // Deep Sleep time in microseconds (adjust as needed)
 // 120e6 = 120 * 1,000,000 = 120,000,000 microseconds = 2 minutes
-const uint64_t sleepTime = 120e6; // Example: 2 minutes deep sleep
+const uint64_t sleepTime = 20e6 // 120e6; // Example: 2 minutes deep sleep
 
 
 // --- Web Server and OTA Objects ---
@@ -280,8 +280,12 @@ void setup() {
 
     // --- ESP-NOW Initialization and Sending ---
     WiFi.mode(WIFI_STA); // Set WiFi to Station mode
-    Serial.print("WiFi.status(): ");
+    // Explicitly begin WiFi to ensure interface is ready for ESP-NOW
+    // Even without connecting to an AP, this helps initialize the STA interface.
+    WiFi.begin("", ""); // Use empty SSID and password to just bring up the interface
+    Serial.print("WiFi.status() after WiFi.begin: ");
     Serial.println(WiFi.status());
+
 
     // Init ESP-NOW
     if (esp_now_init() != ESP_OK) { // Check return code for ESP32
@@ -305,8 +309,10 @@ void setup() {
       peerInfo.encrypt = false; // No encryption
 
       // Add peer
-      if (esp_now_add_peer(&peerInfo) != ESP_OK) {
-        Serial.println("Failed to add peer");
+      esp_err_t add_peer_result = esp_now_add_peer(&peerInfo);
+      if (add_peer_result != ESP_OK) {
+        Serial.print("Failed to add peer. Error: ");
+        Serial.println(add_peer_result); // Print the specific error code
         // Consider error handling
       } else {
         Serial.println("Peer added successfully");
