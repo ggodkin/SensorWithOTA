@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
+// Include WebServer.h before the WebServer object definition
 #include <WebServer.h>
 #include <ElegantOTA.h>
 #include <esp_sleep.h>
@@ -36,7 +37,7 @@ const int ANALOG_PIN = 34; // Example: Map to an ESP32 ADC GPIO (e.g., GPIO34 is
 
 // Deep Sleep time in microseconds (adjust as needed)
 // 120e6 = 120 * 1,000,000 = 120,000,000 microseconds = 2 minutes
-const uint64_t sleepTime = 20e6 // 120e6; // Example: 2 minutes deep sleep
+const uint64_t sleepTime = 20e6; // Example: 2 minutes deep sleep
 
 
 // --- Web Server and OTA Objects ---
